@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         SONAR_HOST_URL = 'http://54.202.243.49:9000'
-        SONAR_LOGIN = 'sqp_7001554c780594f752f67eb89011a3d6e1d28d3e'
+        SONAR_TOKEN = 'sqp_7001554c780594f752f67eb89011a3d6e1d28d3e'
     }
 
     stages {
@@ -31,10 +31,13 @@ pipeline {
                     cd webapp
                     docker container run --rm \
                         -e SONAR_HOST_URL=${SONAR_HOST_URL} \
-                        -e SONAR_LOGIN=${SONAR_LOGIN} \
+                        -e SONAR_TOKEN=${SONAR_TOKEN} \
                         -v $(pwd):/usr/src \
                         sonarsource/sonar-scanner-cli \
-                        -Dsonar.projectKey=lms
+                        -Dsonar.projectKey=lms \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=${SONAR_HOST_URL} \
+                        -Dsonar.token=${SONAR_TOKEN}
                 '''
             }
         }
