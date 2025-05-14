@@ -13,7 +13,7 @@ pipeline {
       
        stage('Build LMS') {
            steps {
-               echo 'LMS Build Started'
+               echo 'LlMS Build Started'
                sh 'cd webapp && npm install && npm run build'
                echo 'LMS Build Completed'
            }
