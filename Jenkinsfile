@@ -1,31 +1,64 @@
 pipeline {
     agent any
+    
     environment {
-        // More detail: 
-        // https://jenkins.io/doc/book/pipeline/jenkinsfile/#usernames-and-passwords
-        NEXUS_CRED = credentials('nexus')
-   }
+        SONAR_HOST_URL = 'http://54.202.243.49:9000'
+        SONAR_LOGIN = 'sqp_7001554c780594f752f67eb89011a3d6e1d28d3e'
+    }
 
     stages {
+        stage('Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Build') {
             steps {
                 echo 'Building..'
-                sh 'cd webapp && npm install && npm run build'
+                sh '''
+                    cd webapp
+                    npm install
+                    npm run build
+                '''
             }
         }
+
         stage('Test') {
             steps {
                 echo 'Testing..'
-                sh 'cd webapp && sudo docker container run --rm -e SONAR_HOST_URL="http://54.202.243.49:9000" -e SONAR_LOGIN="sqp_7001554c780594f752f67eb89011a3d6e1d28d3e" -v ".:/usr/src" sonarsource/sonar-scanner-cli -Dsonar.projectKey=lms'
+                sh '''
+                    cd webapp
+                    docker container run --rm \
+                        -e SONAR_HOST_URL=${SONAR_HOST_URL} \
+                        -e SONAR_LOGIN=${SONAR_LOGIN} \
+                        -v $(pwd):/usr/src \
+                        sonarsource/sonar-scanner-cli \
+                        -Dsonar.projectKey=lms
+                '''
             }
         }
+
         stage('Release') {
+            when {
+                expression { return currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+            }
             steps {
-                echo 'Release Nexus'
-                sh 'rm -rf *.zip'
-                sh 'cd webapp && zip dist-${BUILD_NUMBER}.zip -r dist'
-                sh 'cd webapp && curl -v -u $Username:$Password --upload-file dist-${BUILD_NUMBER}.zip http://20.172.187.108:8081/repository/lms/'
+                echo 'Releasing..'
+                // Add your release steps here if needed
             }
         }
     }
-} 
+
+    post {
+        always {
+            echo 'Pipeline finished.'
+        }
+        success {
+            echo 'Build, test, and release completed successfully.'
+        }
+        failure {
+            echo 'Build failed.'
+        }
+    }
+}
