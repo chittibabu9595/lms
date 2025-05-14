@@ -40,7 +40,7 @@ pipeline {
                    sh "curl -u admin:Chitti@95953333 -X GET \'http://35.86.177.69:8081/repository/lms/lms-${packageJSONVersion}.zip\' --output lms-'${packageJSONVersion}'.zip"
                    sh 'sudo rm -rf /var/www/html/*'
                    sh "sudo unzip -o lms-'${packageJSONVersion}'.zip"
-                   sh "sudo cp -r webapp/dist/* /var/www/html"
+                   sh "sudo cp -r webapp/dist/* /var/www/html" 
                }
            }
        }
