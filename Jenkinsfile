@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        // Binds Jenkins credentials (type: Username with password)
+        // Use Jenkins credential with ID 'nexus' (Username with password)
         NEXUS_CRED = credentials('nexus')
     }
 
@@ -19,9 +19,9 @@ pipeline {
                 echo 'Testing...'
                 sh '''
                     cd webapp
-                    sudo docker container run --rm \
-                        -e SONAR_HOST_URL="http://54.202.243.49:9000" \
-                        -e SONAR_LOGIN="sqp_7001554c780594f752f67eb89011a3d6e1d28d3e" \
+                    docker container run --rm \
+                        -e SONAR_HOST_URL="http://20.172.187.108:9000" \
+                        -e SONAR_LOGIN="sqp_cae41e62e13793ff17d58483fb6fb82602fe2b48" \
                         -v "$(pwd):/usr/src" \
                         sonarsource/sonar-scanner-cli \
                         -Dsonar.projectKey=lms
@@ -46,10 +46,10 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed successfully.'
+            echo '✅ Pipeline completed successfully.'
         }
         failure {
-            echo 'Pipeline failed. Please check the logs.'
+            echo '❌ Pipeline failed. Please check the logs.'
         }
     }
 }
