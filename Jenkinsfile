@@ -46,7 +46,7 @@ pipeline {
        }
        stage('Clean Up Workspace') { 
            steps {
-                   echo 'Cleaning Work Space'
+                   echo 'Cleaning Work Spaace'
                    // Install Cleanup Workspace plugin to make below command work
                    cleanWs()
            }
