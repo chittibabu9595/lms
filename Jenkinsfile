@@ -7,7 +7,7 @@ pipeline {
            steps {
                echo 'Soonar Analysis Started'
                sh 'cd webapp && sudo docker run --rm -e SONAR_HOST_URL="http://35.93.78.169:9000" -v ".:/usr/src" -e SONAR_TOKEN="sqp_9d0984a66016dd7a201e3b13f7b87365f97090a5" sonarsource/sonar-scanner-cli -Dsonar.projectKey=lms'
-               echo 'Sonar Analysis Completed'
+               echo 'Sonar Analysis Completedd' 
            }
        }
       
